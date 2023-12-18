@@ -1,5 +1,6 @@
 package com.example.likelionspringbootrestapi.domain.article.article.controller;
 
+import com.example.likelionspringbootrestapi.domain.article.article.dto.ArticleDto;
 import com.example.likelionspringbootrestapi.domain.article.article.entity.Article;
 import com.example.likelionspringbootrestapi.domain.article.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,11 @@ public class ApiV1ArticlesController {
     private final ArticleService articleService;
 
     @GetMapping("")
-    public List<Article> getArticles() {
-        return articleService.findAll();
+    public List<ArticleDto> getArticles() {
+        return articleService
+                .findAll()
+                .stream()
+                .map(ArticleDto::new)
+                .toList();
     }
 }
