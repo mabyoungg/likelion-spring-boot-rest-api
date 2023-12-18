@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Custom ###
+restapi_dev.mv.db
+restapi_dev.trace.db
