@@ -6,10 +6,7 @@ import com.example.likelionspringbootrestapi.domain.article.article.service.Arti
 import com.example.likelionspringbootrestapi.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -58,6 +55,32 @@ public class ApiV1ArticlesController {
                 "성공",
                 new GetArticleResponseBody(
                         articleService.findById(id).get()
+                )
+        );
+    }
+
+    @Getter
+    public static class RemoveArticleResponseBody {
+        private final ArticleDto item;
+
+        public RemoveArticleResponseBody(Article article) {
+            item = new ArticleDto(article);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public RsData<RemoveArticleResponseBody> removeArticle(
+            @PathVariable long id
+    ) {
+        Article article = articleService.findById(id).get();
+
+        articleService.deleteById(id);
+
+        return RsData.of(
+                "200",
+                "성공",
+                new RemoveArticleResponseBody(
+                        article
                 )
         );
     }
