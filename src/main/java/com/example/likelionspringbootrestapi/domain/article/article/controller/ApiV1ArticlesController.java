@@ -3,6 +3,8 @@ package com.example.likelionspringbootrestapi.domain.article.article.controller;
 import com.example.likelionspringbootrestapi.domain.article.article.dto.ArticleDto;
 import com.example.likelionspringbootrestapi.domain.article.article.entity.Article;
 import com.example.likelionspringbootrestapi.domain.article.article.service.ArticleService;
+import com.example.likelionspringbootrestapi.domain.member.member.entity.Member;
+import com.example.likelionspringbootrestapi.global.rq.Rq;
 import com.example.likelionspringbootrestapi.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ApiV1ArticlesController {
     private final ArticleService articleService;
+    private final Rq rq;
 
     @Getter
     public static class GetArticlesResponseBody {
@@ -116,6 +119,38 @@ public class ApiV1ArticlesController {
                 "성공",
                 new ModifyArticleResponseBody(
                         article
+                )
+        );
+    }
+
+    @Getter
+    @Setter
+    public static class WriteArticleRequestBody {
+        private String title;
+        private String body;
+    }
+
+    @Getter
+    public static class WriteArticleResponseBody {
+        private final ArticleDto item;
+
+        public WriteArticleResponseBody(Article article) {
+            item = new ArticleDto(article);
+        }
+    }
+
+    @PostMapping("")
+    public RsData<WriteArticleResponseBody> writeArticle(
+            @RequestBody WriteArticleRequestBody body
+    ) {
+        Member member = rq.getMember();
+        RsData<Article> writeRs = articleService.write(member, body.getTitle(), body.getBody());
+
+        return RsData.of(
+                writeRs.getResultCode(),
+                writeRs.getMsg(),
+                new WriteArticleResponseBody(
+                        writeRs.getData()
                 )
         );
     }
