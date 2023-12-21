@@ -21,7 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final MemberService memberService;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     @SneakyThrows
