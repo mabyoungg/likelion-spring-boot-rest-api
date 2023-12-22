@@ -2,6 +2,7 @@ package com.example.likelionspringbootrestapi.global.rq;
 
 import com.example.likelionspringbootrestapi.domain.member.member.entity.Member;
 import com.example.likelionspringbootrestapi.domain.member.member.service.MemberService;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.concurrent.atomic.AtomicMarkableReference;
 
 @Component
 @RequestScope
@@ -18,13 +21,14 @@ public class Rq {
     private final HttpServletResponse response;
     private final MemberService memberService;
     private Member member;
+    private final EntityManager entityManager;
 
     public Member getMember() {
         if (member == null) {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             long memberId = Long.parseLong(user.getUsername());
 
-            member = memberService.findById(memberId).get();
+            member = entityManager.getReference(Member.class, memberId);
         }
 
         return member;
