@@ -2,6 +2,7 @@ package com.example.likelionspringbootrestapi.global.rq;
 
 import com.example.likelionspringbootrestapi.domain.member.member.entity.Member;
 import com.example.likelionspringbootrestapi.domain.member.member.service.MemberService;
+import com.example.likelionspringbootrestapi.global.security.SecurityUser;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,8 +26,8 @@ public class Rq {
 
     public Member getMember() {
         if (member == null) {
-            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long memberId = Long.parseLong(user.getUsername());
+            SecurityUser user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            long memberId = user.getId();
 
             member = entityManager.getReference(Member.class, memberId);
         }

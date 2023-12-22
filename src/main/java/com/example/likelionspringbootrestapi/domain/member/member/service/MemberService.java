@@ -3,6 +3,7 @@ package com.example.likelionspringbootrestapi.domain.member.member.service;
 import com.example.likelionspringbootrestapi.domain.member.member.entity.Member;
 import com.example.likelionspringbootrestapi.domain.member.member.repository.MemberRepository;
 import com.example.likelionspringbootrestapi.global.rsData.RsData;
+import com.example.likelionspringbootrestapi.global.security.SecurityUser;
 import com.example.likelionspringbootrestapi.global.util.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -53,18 +54,20 @@ public class MemberService {
         return memberRepository.findByUsername(username);
     }
 
-    public User getUserFromApiKey(String apiKey) {
+    public SecurityUser getUserFromApiKey(String apiKey) {
         Claims claims = JwtUtil.decode(apiKey);
 
         Map<String, Object> data = (Map<String, Object>) claims.get("data");
-        String id = (String) data.get("id");
+        long id = Long.parseLong((String) data.get("id"));
+        String username = (String) data.get("username");
         List<? extends GrantedAuthority> authorities = ((List<String>) data.get("authorities"))
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
-        return new User(
+        return new SecurityUser(
                 id,
+                username,
                 "",
                 authorities
         );
