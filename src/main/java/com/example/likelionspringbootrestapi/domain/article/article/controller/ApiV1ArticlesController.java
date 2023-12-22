@@ -10,6 +10,7 @@ import com.example.likelionspringbootrestapi.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -143,14 +144,12 @@ public class ApiV1ArticlesController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("")
     public RsData<WriteArticleResponseBody> writeArticle(
-            @RequestBody WriteArticleRequestBody body,
-             Principal principal
+            @RequestBody WriteArticleRequestBody body
     ) {
         Member member = rq.getMember();
-
-        member = memberService.findById(2L).get();
 
         RsData<Article> writeRs = articleService.write(member, body.getTitle(), body.getBody());
 
