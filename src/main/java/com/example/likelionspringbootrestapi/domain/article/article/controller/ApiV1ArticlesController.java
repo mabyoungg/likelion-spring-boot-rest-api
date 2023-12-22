@@ -4,6 +4,7 @@ import com.example.likelionspringbootrestapi.domain.article.article.dto.ArticleD
 import com.example.likelionspringbootrestapi.domain.article.article.entity.Article;
 import com.example.likelionspringbootrestapi.domain.article.article.service.ArticleService;
 import com.example.likelionspringbootrestapi.domain.member.member.entity.Member;
+import com.example.likelionspringbootrestapi.domain.member.member.service.MemberService;
 import com.example.likelionspringbootrestapi.global.rq.Rq;
 import com.example.likelionspringbootrestapi.global.rsData.RsData;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class ApiV1ArticlesController {
     private final ArticleService articleService;
     private final Rq rq;
+    private final MemberService memberService;
 
     @Getter
     public static class GetArticlesResponseBody {
@@ -148,11 +150,7 @@ public class ApiV1ArticlesController {
     ) {
         Member member = rq.getMember();
 
-        Optional.ofNullable(principal)
-                .ifPresentOrElse(
-                        p -> System.out.println("로그인 : " + p.getName()),
-                        () -> System.out.println("비로그인"));
-
+        member = memberService.findById(2L).get();
 
         RsData<Article> writeRs = articleService.write(member, body.getTitle(), body.getBody());
 
