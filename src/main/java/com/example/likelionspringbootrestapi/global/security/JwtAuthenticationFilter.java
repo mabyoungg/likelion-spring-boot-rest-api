@@ -2,6 +2,7 @@ package com.example.likelionspringbootrestapi.global.security;
 
 import com.example.likelionspringbootrestapi.domain.member.member.entity.Member;
 import com.example.likelionspringbootrestapi.domain.member.member.service.MemberService;
+import com.example.likelionspringbootrestapi.global.rq.Rq;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,22 +22,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final MemberService memberService;
+    private final Rq rq;
 
     @Override
     @SneakyThrows
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
-        String apiKey = request.getHeader("X-ApiKey");
+        String apiKey = rq.getHeader("X-ApiKey", null);
 
         if (apiKey != null) {
             SecurityUser user = memberService.getUserFromApiKey(apiKey);
 
-            Authentication auth = new UsernamePasswordAuthenticationToken(
-                    user,
-                    user.getPassword(),
-                    user.getAuthorities()
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            rq.setAuthentication(user);
         }
 
         filterChain.doFilter(request, response);
