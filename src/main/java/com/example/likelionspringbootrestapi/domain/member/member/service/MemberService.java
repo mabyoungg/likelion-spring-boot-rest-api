@@ -95,4 +95,23 @@ public class MemberService {
     public Optional<Member> findByRefreshToken(String refreshToken) {
         return memberRepository.findByRefreshToken(refreshToken);
     }
+
+    public String genRefreshToken(Member member) {
+        if (member.getRefreshToken() != null && !member.getRefreshToken().isBlank()) {
+            return member.getRefreshToken();
+        }
+
+        String refreshToken = JwtUtil.encode(
+                60 * 60 * 24 * 365,
+                Map.of(
+                        "id", member.getId().toString(),
+                        "username", member.getUsername()
+                )
+        );
+
+        member.setRefreshToken(refreshToken);
+
+        return refreshToken;
+    }
+
 }

@@ -66,16 +66,7 @@ public class ApiV1MembersController {
                 )
         );
 
-        String refreshToken = JwtUtil.encode(
-                60 * 60 * 24 * 365,
-                Map.of(
-                        "id", id.toString(),
-                        "username", member.getUsername()
-                )
-        );
-
-        memberService.setRefreshToken(member, refreshToken);
-
+        String refreshToken = memberService.genRefreshToken(member);
 
         return RsData.of(
                 "200",
